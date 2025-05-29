@@ -1,36 +1,178 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌊 DeepDive
 
-## Getting Started
+A beautiful web application that explores and visualizes GitHub repository structures with an elegant tree interface.
 
-First, run the development server:
+![DeepDive Banner](https://img.shields.io/badge/DeepDive-Repository%20Explorer-blue?style=for-the-badge&logo=github)
 
-```bash
+## ✨ Features
+
+- 🔍 **Repository Search** - Search any public GitHub repository by owner and name
+- 🌳 **Tree Visualization** - Beautiful hierarchical display of files and folders
+- 📊 **Repository Info** - View stars, forks, language, and description
+- 📁 **File Details** - See file sizes and proper organization
+- 🎨 **Modern UI** - Clean, responsive design with gradient backgrounds
+- 🌙 **Dark Mode Ready** - Built-in support for light and dark themes
+- ⚡ **Fast Loading** - Optimized performance with loading states
+- 📱 **Mobile Friendly** - Responsive design that works on all devices
+
+## 🚀 Demo
+
+Try exploring these popular repositories:
+
+- `facebook/react`
+- `vercel/next.js`
+- `microsoft/vscode`
+- `tailwindlabs/tailwindcss`
+
+## 🛠️ Technologies Used
+
+- **Framework**: [Next.js 15](https://nextjs.org/) with App Router
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **UI Components**: [shadcn/ui](https://ui.shadcn.com/)
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **API**: [GitHub REST API](https://docs.github.com/en/rest)
+
+## 📦 Installation
+
+### Option 1: Clone and Install
+
+\`\`\`bash
+
+# Clone the repository
+
+git clone https://github.com/yourusername/deepdive.git
+
+# Navigate to the project directory
+
+cd deepdive
+
+# Install dependencies
+
+npm install
+
+# Start the development server
+
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+\`\`\`
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Option 2: Deploy to Vercel
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/deepdive)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🎯 Usage
 
-## Learn More
+1. **Enter Repository Details**
 
-To learn more about Next.js, take a look at the following resources:
+   - Input the repository owner (e.g., "facebook")
+   - Input the repository name (e.g., "react")
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. **Explore the Structure**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   - View repository information including stars, forks, and language
+   - Browse the complete file and folder structure
+   - See file sizes and organization
 
-## Deploy on Vercel
+3. **Navigate the Tree**
+   - Folders are displayed with blue folder icons
+   - Files show with gray file icons
+   - File sizes are displayed in KB
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🔧 Configuration
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Environment Variables
+
+No environment variables are required for basic functionality. The app uses the public GitHub API which has rate limiting for unauthenticated requests.
+
+For higher rate limits, you can optionally add:
+
+\`\`\`env
+GITHUB_TOKEN=your_github_personal_access_token
+\`\`\`
+
+### API Rate Limits
+
+- **Unauthenticated**: 60 requests per hour
+- **Authenticated**: 5,000 requests per hour
+
+## 📁 Project Structure
+
+\`\`\`
+deepdive/
+├── app/
+│ ├── globals.css
+│ ├── layout.tsx
+│ ├── loading.tsx
+│ └── page.tsx
+├── components/
+│ └── ui/
+│ ├── button.tsx
+│ ├── card.tsx
+│ ├── input.tsx
+│ └── ...
+├── lib/
+│ └── utils.ts
+├── public/
+├── tailwind.config.ts
+├── next.config.js
+├── package.json
+└── README.md
+\`\`\`
+
+## 🎨 Customization
+
+### Changing Colors
+
+Edit the color scheme in `tailwind.config.ts`:
+
+\`\`\`typescript
+theme: {
+extend: {
+colors: {
+// Add your custom colors here
+}
+}
+}
+\`\`\`
+
+### Adding Features
+
+The codebase is modular and easy to extend:
+
+- Add new API endpoints in the `fetchRepoData` function
+- Extend the tree visualization in the `renderTree` function
+- Add new UI components using shadcn/ui
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the project
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- [GitHub API](https://docs.github.com/en/rest) for providing repository data
+- [shadcn/ui](https://ui.shadcn.com/) for the beautiful UI components
+- [Vercel](https://vercel.com/) for hosting and deployment
+- [Tailwind CSS](https://tailwindcss.com/) for the styling system
+
+## 📧 Contact
+
+**ikegwuonu** - Developer
+
+---
+
+<div align="center">
+  <p>Developed with ❤️ by ikegwuonu</p>
+  <p>
+    <a href="#top">Back to top</a>
+  </p>
+</div>

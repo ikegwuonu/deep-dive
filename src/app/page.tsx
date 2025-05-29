@@ -1,7 +1,6 @@
 "use client";
 
 import type React from "react";
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,26 +24,7 @@ import {
   Loader2,
 } from "lucide-react";
 import Link from "next/link";
-
-interface TreeItem {
-  path: string;
-  mode: string;
-  type: "blob" | "tree";
-  sha: string;
-  size?: number;
-  url: string;
-}
-
-interface RepoInfo {
-  name: string;
-  full_name: string;
-  description: string;
-  html_url: string;
-  stargazers_count: number;
-  forks_count: number;
-  language: string;
-  updated_at: string;
-}
+import { RepoInfo, TreeItem } from "@/lib/types";
 
 export default function Component() {
   const [owner, setOwner] = useState("");
