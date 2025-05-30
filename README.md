@@ -41,7 +41,7 @@ Try exploring these popular repositories:
 
 # Clone the repository
 
-git clone https://github.com/yourusername/deepdive.git
+git clone https://github.com/ikegwuonu/deepdive.git
 
 # Navigate to the project directory
 

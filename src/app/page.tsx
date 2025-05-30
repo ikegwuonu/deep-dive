@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -24,46 +24,50 @@ import {
   Loader2,
 } from "lucide-react";
 import Link from "next/link";
-import { RepoInfo, TreeItem } from "@/lib/types";
+import { RepoInfo, Structure, TreeItem } from "@/lib/types";
+import DirectoryTreeView from "@/components/TreeView";
 
 export default function Component() {
+  const [branch, setBranch] = useState("main");
   const [owner, setOwner] = useState("");
   const [repo, setRepo] = useState("");
   const [loading, setLoading] = useState(false);
   const [repoInfo, setRepoInfo] = useState<RepoInfo | null>(null);
-  const [treeData, setTreeData] = useState<TreeItem[]>([]);
+  const [treeData, setTreeData] = useState<Structure[]>([]);
   const [error, setError] = useState("");
 
   const fetchRepoData = async () => {
     if (!owner || !repo) return;
+    if (
+      repoInfo &&
+      repoInfo.full_name === `${owner}/${repo}` &&
+      branch === branch
+    ) {
+      return;
+    }
 
     setLoading(true);
     setError("");
+    setRepoInfo(null);
+    setTreeData([]);
 
     try {
-      // Fetch repository info
-      const repoResponse = await fetch(
-        `https://api.github.com/repos/${owner}/${repo}`
+      const res = await fetch(
+        `/api/tree?owner=${owner}&repo=${repo}&branch=${branch}`
       );
-      if (!repoResponse.ok) {
-        throw new Error("Repository not found");
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || "Failed to fetch");
       }
-      const repoData = await repoResponse.json();
-      setRepoInfo(repoData);
 
-      // Fetch tree structure
-      const treeResponse = await fetch(
-        `https://api.github.com/repos/${owner}/${repo}/git/trees/${repoData.default_branch}?recursive=1`
-      );
-      if (!treeResponse.ok) {
-        throw new Error("Failed to fetch tree structure");
-      }
-      const treeResult = await treeResponse.json();
-      setTreeData(treeResult.tree || []);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-      setRepoInfo(null);
-      setTreeData([]);
+      const data = await res.json();
+
+      setRepoInfo(data.repoDetails);
+
+      setTreeData(data.structure);
+      console.log(data.structure);
+    } catch (err: any) {
+      setError(err.message);
     } finally {
       setLoading(false);
     }
@@ -73,80 +77,13 @@ export default function Component() {
     e.preventDefault();
     fetchRepoData();
   };
-
-  const renderTree = () => {
-    const pathMap = new Map<string, TreeItem[]>();
-
-    // Group items by their parent directory
-    treeData.forEach((item) => {
-      const parts = item.path.split("/");
-      const parentPath = parts.slice(0, -1).join("/");
-
-      if (!pathMap.has(parentPath)) {
-        pathMap.set(parentPath, []);
-      }
-      pathMap.get(parentPath)!.push(item);
-    });
-
-    const renderItems = (
-      parentPath: string,
-      level = 0
-    ): React.JSX.Element[] => {
-      const items = pathMap.get(parentPath) || [];
-      const result: React.JSX.Element[] = [];
-
-      // Separate directories and files
-      const directories = items.filter((item) => item.type === "tree");
-      const files = items.filter((item) => item.type === "blob");
-
-      // Render directories first
-      directories.forEach((dir) => {
-        const fullPath = parentPath
-          ? `${parentPath}/${dir.path.split("/").pop()}`
-          : dir.path;
-        result.push(
-          <div key={dir.path} className="select-none">
-            <div
-              className="flex items-center gap-2 py-1 px-2 hover:bg-muted/50 rounded-md cursor-pointer"
-              style={{ paddingLeft: `${level * 20 + 8}px` }}
-            >
-              <Folder className="w-4 h-4 text-blue-500" />
-              <span className="text-sm font-medium">
-                {dir.path.split("/").pop()}
-              </span>
-            </div>
-            {renderItems(dir.path, level + 1)}
-          </div>
-        );
-      });
-
-      // Render files
-      files.forEach((file) => {
-        const fileName = file.path.split("/").pop() || "";
-        const extension = fileName.split(".").pop();
-
-        result.push(
-          <div
-            key={file.path}
-            className="flex items-center gap-2 py-1 px-2 hover:bg-muted/50 rounded-md cursor-pointer"
-            style={{ paddingLeft: `${level * 20 + 8}px` }}
-          >
-            <File className="w-4 h-4 text-gray-500" />
-            <span className="text-sm">{fileName}</span>
-            {file.size && (
-              <span className="text-xs text-muted-foreground ml-auto">
-                {(file.size / 1024).toFixed(1)}KB
-              </span>
-            )}
-          </div>
-        );
-      });
-
-      return result;
-    };
-
-    return renderItems("");
-  };
+  useEffect(() => {
+    if (treeData.length > 0) {
+      document
+        .getElementById("tree-section")
+        ?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [treeData]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
@@ -175,12 +112,13 @@ export default function Component() {
               Repository Explorer
             </CardTitle>
             <CardDescription>
-              Enter the repository owner and name to explore its structure
+              Enter the repository owner and name to explore its structure.
+              Default branch is "main"
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="owner">Repository Owner</Label>
                   <Input
@@ -198,6 +136,16 @@ export default function Component() {
                     placeholder="e.g., react"
                     value={repo}
                     onChange={(e) => setRepo(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="branch">Branch Name</Label>
+                  <Input
+                    id="branch"
+                    placeholder="e.g., main"
+                    value={branch}
+                    onChange={(e) => setBranch(e.target.value)}
                     required
                   />
                 </div>
@@ -271,7 +219,7 @@ export default function Component() {
 
         {/* Tree Structure */}
         {treeData.length > 0 && (
-          <Card className="max-w-4xl mx-auto shadow-lg">
+          <Card className="max-w-4xl mx-auto shadow-lg" id="tree-section">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Folder className="w-5 h-5" />
@@ -284,7 +232,9 @@ export default function Component() {
             <Separator />
             <CardContent className="p-0">
               <div className="max-h-96 overflow-y-auto">
-                <div className="p-4">{renderTree()}</div>
+                <div className="p-4">
+                  {<DirectoryTreeView folder={treeData} />}
+                </div>
               </div>
             </CardContent>
           </Card>

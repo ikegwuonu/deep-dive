@@ -1,12 +1,18 @@
+import { NodeId } from "react-accessible-treeview";
+
 export interface Children {
   name: string;
   type: "folder" | "file";
+  children?: Children[];
 }
 export interface Structure {
+  id: number;
   name: string;
-  type: "folder" | "file";
-  children?: Children | Children[];
+  parent: number | null;
+  children: NodeId[];
+  metadata?: any; // or define your own metadata type
 }
+
 export interface TreeItem {
   path: string;
   mode: string;

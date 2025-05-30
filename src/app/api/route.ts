@@ -3,6 +3,7 @@
 import { NextResponse } from "next/server";
 import axios from "axios";
 import { Structure } from "@/lib/types";
+import { skip } from "node:test";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -26,6 +27,7 @@ export async function GET(req: Request) {
 
     const structure: Structure[] = await Promise.all(
       contents.map(async (item: any) => {
+        if (!item) skip;
         if (item.type === "dir") {
           return {
             name: item.name,
