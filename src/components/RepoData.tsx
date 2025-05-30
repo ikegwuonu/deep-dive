@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -8,11 +8,21 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import { ExternalLink, Folder, Github } from "lucide-react";
+import {
+  Copy,
+  CopyCheck,
+  Download,
+  ExternalLink,
+  Folder,
+  Github,
+} from "lucide-react";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import DirectoryTreeView from "./TreeView";
 import { RepoInfo, Structure } from "@/lib/types";
+import s from "./Clipboard";
+import { downloadStructure, generateTree } from "@/lib/utils";
+import Clipboard from "./Clipboard";
 
 interface RepoDataProps {
   repoInfo: RepoInfo | null;
@@ -20,6 +30,16 @@ interface RepoDataProps {
 }
 
 const RepoData = ({ repoInfo, treeData }: RepoDataProps) => {
+  const structureMap: Record<number, Structure> = {};
+  treeData.forEach((node) => {
+    structureMap[node.id] = node;
+  });
+
+  const structureText = treeData
+    .filter((node) => node.parent === null)
+    .map((rootNode) => generateTree(rootNode, structureMap))
+    .join("");
+
   return (
     <div>
       {/* Repository Info */}
@@ -69,9 +89,19 @@ const RepoData = ({ repoInfo, treeData }: RepoDataProps) => {
               <Folder className="w-5 h-5" />
               Repository Structure
             </CardTitle>
-            <CardDescription>
+            <div className="flex justify-between w-full text-slate-600 text-sm my-1">
               {treeData.length} items found in the repository
-            </CardDescription>
+              <div className="flex gap-1 items-center">
+                {" "}
+                <Clipboard structureText={structureText} />
+                <Button
+                  className="bg-gray-400"
+                  onClick={() => downloadStructure(structureText)}
+                >
+                  <Download />
+                </Button>
+              </div>
+            </div>
           </CardHeader>
           <Separator />
           <CardContent className="p-0">

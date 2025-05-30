@@ -54,7 +54,6 @@ export default function Component() {
       setRepoInfo(data.repoDetails);
 
       setTreeData(data.structure);
-      console.log(data.structure);
     } catch (err: any) {
       setError(err.message);
     } finally {

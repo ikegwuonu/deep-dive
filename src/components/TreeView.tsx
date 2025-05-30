@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { DiCss3, DiJavascript, DiNpm } from "react-icons/di";
 import { FaFile, FaList, FaRegFolder, FaRegFolderOpen } from "react-icons/fa";
 import TreeView, { flattenTree } from "react-accessible-treeview";
@@ -6,9 +6,18 @@ import "../app/tree_styles.css";
 import { Structure } from "@/lib/types";
 import { SiJson, SiTypescript } from "react-icons/si";
 import { BiLogoTypescript } from "react-icons/bi";
-import { File, FileJson, Folder, FolderOpen, Icon } from "lucide-react";
+import {
+  Copy,
+  CopyCheck,
+  File,
+  FileJson,
+  Folder,
+  FolderOpen,
+  Icon,
+} from "lucide-react";
 import { IconBase } from "react-icons";
 import { MdJavascript } from "react-icons/md";
+import { Button } from "./ui/button";
 
 interface DirectoryTreeProps {
   folder: Structure[];
@@ -17,7 +26,7 @@ interface DirectoryTreeProps {
 function DirectoryTreeView({ folder }: DirectoryTreeProps) {
   return (
     <div>
-      <div className=" ">
+      <div className=" relative">
         <TreeView
           data={folder}
           aria-label="directory tree"
