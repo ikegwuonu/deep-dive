@@ -1,7 +1,6 @@
 import { Structure, TreeItem } from "@/lib/types";
-import { showerror } from "@/lib/utils";
+
 import { NextResponse } from "next/server";
-import { v4 as uuid } from "uuid"; // Fix import
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
