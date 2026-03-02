@@ -20,7 +20,7 @@ A beautiful web application that explores and visualizes GitHub repository struc
 Try exploring these popular repositories:
 
 - `facebook/react`
-- `vercel/next.js`
+- `vercel/commerce`
 - `microsoft/vscode`
 - `tailwindlabs/tailwindcss`
 
@@ -63,12 +63,10 @@ npm run dev
 ## 🎯 Usage
 
 1. **Enter Repository Details**
-
    - Input the repository owner (e.g., "facebook")
    - Input the repository name (e.g., "react")
 
 2. **Explore the Structure**
-
    - View repository information including stars, forks, and language
    - Browse the complete file and folder structure
    - See file sizes and organization

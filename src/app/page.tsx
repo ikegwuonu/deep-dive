@@ -42,7 +42,7 @@ export default function Component() {
 
     try {
       const res = await fetch(
-        `/api/tree?owner=${owner}&repo=${repo}&branch=${branch}`
+        `/api/tree?owner=${owner}&repo=${repo}&branch=${branch}`,
       );
       if (!res.ok) {
         const err = await res.json();
@@ -183,7 +183,7 @@ export default function Component() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {[
                   { owner: "facebook", repo: "react" },
-                  { owner: "vercel", repo: "next.js" },
+                  { owner: "vercel", repo: "commerce" },
                   { owner: "microsoft", repo: "vscode" },
                   { owner: "tailwindlabs", repo: "tailwindcss" },
                 ].map(({ owner: exampleOwner, repo: exampleRepo }) => (
